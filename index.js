@@ -7,6 +7,10 @@ const connectDB = require("./db/db.connection");
 const userRoutes = require("./routes/user.router");
 const videoRoutes = require("./routes/videos.router");
 const likedVideoRoutes = require("./routes/likedVideos.router");
+const watchLaterVideoRoutes = require("./routes/watchLater.router");
+const savedVideoRoutes = require("./routes/savedVideos.router");
+const videoNoteRoutes = require("./routes/notes.router");
+const categoryRoutes = require("./routes/categories.router");
 
 app.use(cors());
 app.use(express.json());
@@ -16,6 +20,10 @@ connectDB();
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/videos", videoRoutes);
 app.use("/api/v1/videos", likedVideoRoutes);
+app.use("/api/v1/users", watchLaterVideoRoutes);
+app.use("/api/v1/users", savedVideoRoutes);
+app.use("/api/v1/users", videoNoteRoutes);
+app.use("/api/v1/category", categoryRoutes);
 
 const PORT = process.env.PORT || 7000;
 

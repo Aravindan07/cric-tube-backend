@@ -3,8 +3,9 @@ const router = express.Router();
 const LikedVideo = require("../models/likedVideo.model");
 const User = require("../models/user.model");
 const Video = require("../models/video.model");
+const checkAuth = require("../middlewares/checkAuth");
 
-router.get("/:userId/liked-videos", async (req, res) => {
+router.get("/:userId/liked-videos", checkAuth, async (req, res) => {
 	const { userId } = req.params;
 	try {
 		const likedVideos = await LikedVideo.find({ userId: userId })
@@ -17,7 +18,7 @@ router.get("/:userId/liked-videos", async (req, res) => {
 	}
 });
 
-router.post("/:userId/:videoId/like", async (req, res) => {
+router.post("/:userId/:videoId/like", checkAuth, async (req, res) => {
 	const { userId, videoId } = req.body;
 	try {
 		const foundVideo = await Video.findById({ _id: videoId });
