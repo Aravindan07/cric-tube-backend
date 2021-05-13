@@ -18,16 +18,21 @@ router.get("/:userId/:videoId/get-notes", checkAuth, async (req, res) => {
 // Add a note
 router.post("/:userId/:videoId/add-notes", checkAuth, async (req, res) => {
 	const { userId, videoId, notes } = req.body;
-	const foundNotes = await Note.findOne({ userId, video: videoId });
-	let savedNote = null;
-	if (foundNotes) {
-		foundNotes.notes = notes;
-		savedNote = await foundNotes.save();
-		return res.status(201).json({ message: "Notes Updated", savedNote });
+	try {
+		const foundNotes = await Note.findOne({ userId, video: videoId });
+		let savedNote = null;
+		if (foundNotes) {
+			foundNotes.notes = notes;
+			savedNote = await foundNotes.save();
+			return res.status(201).json({ message: "Notes Updated", savedNote });
+		}
+		const newNote = new Note({ userId, video: videoId, notes });
+		savedNote = await newNote.save();
+		res.status(201).json({ message: "Added notes", savedNote });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ message: "An error occurred while doing this operation" });
 	}
-	const newNote = new Note({ userId, video: videoId, notes });
-	savedNote = await newNote.save();
-	res.status(201).json({ message: "Added notes", savedNote });
 });
 
 //Delete a note

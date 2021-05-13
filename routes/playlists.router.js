@@ -41,11 +41,7 @@ router.get("/:userId/get-playlists", checkAuth, async (req, res) => {
 router.post("/:userId/playlists", checkAuth, async (req, res) => {
 	const { userId, videoId, playlistName } = req.body;
 	const allPlaylistsByUser = await Playlist.findOne({ userId });
-	console.log("allPlaylistsByUser", allPlaylistsByUser);
 	const foundUser = await User.findOne({ _id: userId });
-	console.log("foundUser", foundUser);
-	const foundVideo = await Video.findById({ _id: videoId });
-	console.log("foundVideo", foundVideo);
 	const foundPlaylist =
 		(await allPlaylistsByUser) &&
 		allPlaylistsByUser.playlists.find((el) => el.playlistName === playlistName);
@@ -88,7 +84,6 @@ router.put("/:userId/playlists/:playlistId", checkAuth, async (req, res) => {
 	const { userId, playlistId, videoId } = req.body;
 	try {
 		const allPlaylistsByUser = await Playlist.findOne({ userId });
-		console.log("allPlaylistsByUser", allPlaylistsByUser);
 		allPlaylistsByUser.playlists.map((el) =>
 			String(el._id) === String(playlistId) ? el.videos.push(videoId) : el
 		);
@@ -107,7 +102,6 @@ router.put("/:userId/playlists/:playlistId/edit-name", checkAuth, async (req, re
 	const { userId, playlistId, newPlaylistName } = req.body;
 	try {
 		const allPlaylistsByUser = await Playlist.findOne({ userId });
-		console.log("allPlaylistsByUser", allPlaylistsByUser);
 		allPlaylistsByUser.playlists.map((el) =>
 			String(el._id) === String(playlistId) ? (el.playlistName = newPlaylistName) : el
 		);
@@ -129,7 +123,6 @@ router.put("/:userId/playlists/:playlistId/delete", checkAuth, async (req, res) 
 		allPlaylistsByUser.playlists = allPlaylistsByUser.playlists.filter((el) => {
 			return String(el._id) !== String(playlistId);
 		});
-		console.log("allPlaylistsByUser", allPlaylistsByUser);
 		const newList = await allPlaylistsByUser.save();
 		return res.json({ message: "Playlist deleted", playlists: newList });
 	} catch (error) {
@@ -145,7 +138,6 @@ router.put("/:userId/playlists/:playlistId/:videoId/delete", checkAuth, async (r
 	const { userId, playlistId, videoId } = req.body;
 	try {
 		const allPlaylistsByUser = await Playlist.findOne({ userId });
-		console.log("allPlaylistsByUser", allPlaylistsByUser);
 		allPlaylistsByUser.playlists.map((el) => {
 			if (String(el._id) === String(playlistId)) {
 				return (el.videos = el.videos.filter((video) => String(video) !== String(videoId)));
