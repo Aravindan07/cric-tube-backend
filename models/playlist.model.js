@@ -4,8 +4,12 @@ const Schema = mongoose.Schema;
 const playlistSchema = new Schema(
 	{
 		userId: { type: Schema.Types.ObjectId, ref: "User" },
-		playlistName: { type: String, required: true },
-		videos: [{ type: Schema.Types.ObjectId, ref: "Video" }],
+		playlists: [
+			{
+				playlistName: { type: String, required: true, unique: true },
+				videos: [{ type: Schema.Types.ObjectId, ref: "Video" }],
+			},
+		],
 	},
 	{ timestamps: true }
 );

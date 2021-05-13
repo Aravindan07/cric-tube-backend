@@ -11,6 +11,7 @@ const watchLaterVideoRoutes = require("./routes/watchLater.router");
 const savedVideoRoutes = require("./routes/savedVideos.router");
 const videoNoteRoutes = require("./routes/notes.router");
 const categoryRoutes = require("./routes/categories.router");
+const playlistRoutes = require("./routes/playlists.router");
 
 app.use(cors());
 app.use(express.json());
@@ -24,6 +25,7 @@ app.use("/api/v1/users", watchLaterVideoRoutes);
 app.use("/api/v1/users", savedVideoRoutes);
 app.use("/api/v1/users", videoNoteRoutes);
 app.use("/api/v1/category", categoryRoutes);
+app.use("/api/v1/users", playlistRoutes);
 
 const PORT = process.env.PORT || 7000;
 

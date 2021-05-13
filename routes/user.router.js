@@ -93,7 +93,9 @@ router.post("/login", async (req, res) => {
 
 router.get("/:userId", checkAuth, async (req, res) => {
 	try {
-		const user = await User.findById(req.user.id).select("-password -createdDate -__v");
+		const user = await User.findById(req.user.id)
+			.select("-password -createdDate -__v")
+			.populate("videos");
 		return res.status(200).json({
 			user,
 		});
