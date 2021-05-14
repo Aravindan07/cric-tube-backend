@@ -66,7 +66,7 @@ router.post("/login", async (req, res) => {
 		return res.status(400).json({ message: "Please enter all fields" });
 	}
 	try {
-		const user = await User.findOne({ email }).populate("likedVideos watchLater savedVideos");
+		const user = await User.findOne({ email }).populate("likedVideos savedVideos");
 		if (!user) {
 			return res.status(404).json({ message: "User does not exist" });
 		}
@@ -95,6 +95,7 @@ router.get("/", checkAuth, async (req, res) => {
 	try {
 		const user = await User.findById(req.user.id)
 			.select("-password -createdAt -updatedAt -__v")
+			.populate("likedVideos")
 			.populate({
 				path: "savedVideos",
 				model: "SavedVideo",

@@ -14,13 +14,13 @@ const userSchema = new Schema(
 		likedVideos: [
 			{
 				type: Schema.Types.ObjectId,
-				ref: "Video",
+				ref: "LikedVideo",
 			},
 		],
 		watchLater: [
 			{
 				type: Schema.Types.ObjectId,
-				ref: "Video",
+				ref: "LikedVideo",
 			},
 		],
 		savedVideos: [
