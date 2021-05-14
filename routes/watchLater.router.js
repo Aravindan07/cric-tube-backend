@@ -32,7 +32,7 @@ router.post("/:userId/watch-later", checkAuth, async (req, res) => {
 			return res.status(201).json({ message: "Added to watch later", addedVideo });
 		}
 		const video = new WatchLater({ userId, videos: [videoId] });
-		user.watchLater = video;
+		user.watchLater = videoId;
 		await user.save();
 		const newList = await video.save();
 		return res.status(201).json({ message: "Added to watch later", newList });

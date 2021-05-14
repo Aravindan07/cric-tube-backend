@@ -43,14 +43,14 @@ router.post("/:userId/:videoId/like", checkAuth, async (req, res) => {
 			foundLikedVideo.videos = [...foundLikedVideo.videos, videoId];
 			const newLikedVideos = await foundLikedVideo.save();
 			foundVideo.likes = foundVideo.likes + 1;
-			foundUser.likedVideos.push(foundVideo);
+			foundUser.likedVideos.push(foundLikedVideo);
 			await foundVideo.save();
 			await foundUser.save();
 			return res.status(201).json({ message: "Added to liked videos", item: newLikedVideos });
 		}
 		const videoToAdd = new LikedVideo({ userId, videos: [videoId] });
 		foundVideo.likes = foundVideo.likes + 1;
-		foundUser.likedVideos.push(foundVideo);
+		foundUser.likedVideos.push(videoToAdd);
 		await foundVideo.save();
 		await foundUser.save();
 		const savedVideo = await videoToAdd.save();

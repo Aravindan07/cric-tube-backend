@@ -40,13 +40,17 @@ router.post("/:userId/save-videos", checkAuth, async (req, res) => {
 					.json({ message: "Added to saved videos", savedVideos: newList });
 			}
 			foundSavedVideo.videos = foundSavedVideo.videos.concat(videoId);
-			foundUser.savedVideos = foundUser.savedVideos.concat(videoId);
+			foundUser.savedVideos = foundUser.savedVideos.concat(foundSavedVideo);
 			await foundUser.save();
 			const newList = await foundSavedVideo.save();
+			console.log("Inside my preferred!,1");
 			return res.status(201).json({ message: "Added to saved videos", savedVideos: newList });
 		}
 		const newSavedVideo = new SavedVideo({ userId, videos: [videoId] });
+		foundUser.savedVideos = newSavedVideo;
+		console.log("Inside my preferred!,1");
 		const newList = await newSavedVideo.save();
+		await foundUser.save();
 		return res.status(201).json({ message: "Added to saved videos", savedVideos: newList });
 	} catch (error) {
 		console.error(error);
