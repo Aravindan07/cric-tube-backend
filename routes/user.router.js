@@ -91,7 +91,7 @@ router.post("/login", async (req, res) => {
 
 // Load user data
 
-router.get("/:userId", checkAuth, async (req, res) => {
+router.get("/", checkAuth, async (req, res) => {
 	try {
 		const user = await User.findById(req.user.id)
 			.select("-password -createdDate -__v")
