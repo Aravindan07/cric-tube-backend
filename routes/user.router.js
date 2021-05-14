@@ -66,7 +66,7 @@ router.post("/login", async (req, res) => {
 		return res.status(400).json({ message: "Please enter all fields" });
 	}
 	try {
-		const user = await User.findOne({ email });
+		const user = await User.findOne({ email }).populate("likedVideos");
 		if (!user) {
 			return res.status(404).json({ message: "User does not exist" });
 		}
@@ -94,8 +94,8 @@ router.post("/login", async (req, res) => {
 router.get("/", checkAuth, async (req, res) => {
 	try {
 		const user = await User.findById(req.user.id)
-			.select("-password -createdDate -__v")
-			.populate("videos");
+			.select("-password -createdAt -updatedAt -__v")
+			.populate("likedVideos");
 		return res.status(200).json({
 			user,
 		});
