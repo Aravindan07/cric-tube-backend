@@ -27,7 +27,7 @@ router.post("/:userId/:videoId/dislike", checkAuth, async (req, res) => {
 			await foundVideo.save();
 			let newDislikedVideos = await foundDislikedVideo.save();
 			newDislikedVideos = await newDislikedVideos.populate("videos").execPopulate();
-			return res.status(201).json({ likedVideos: newDislikedVideos, clickedVideo: videoId });
+			return res.status(201).json({ item: newDislikedVideos, clickedVideo: videoId });
 		}
 
 		if (foundDislikedVideo) {
@@ -42,7 +42,7 @@ router.post("/:userId/:videoId/dislike", checkAuth, async (req, res) => {
 			foundDislikedVideo.videos.push(videoId);
 			let newDislikedVideos = await foundDislikedVideo.save();
 			newDislikedVideos = await newDislikedVideos.populate("videos").execPopulate();
-			return res.status(201).json({ item: newDislikedVideos });
+			return res.status(201).json({ item: newDislikedVideos, clickedVideo: videoId });
 		}
 		const videoToAdd = new DislikedVideo({ userId, videos: [videoId] });
 		if (checkInLikedVideos) {
@@ -57,7 +57,7 @@ router.post("/:userId/:videoId/dislike", checkAuth, async (req, res) => {
 		await foundUser.save();
 		let savedVideo = await videoToAdd.save();
 		savedVideo = await savedVideo.populate("videos").execPopulate();
-		return res.status(201).json({ item: savedVideo });
+		return res.status(201).json({ item: savedVideo, clickedVideo: videoId });
 	} catch (error) {
 		console.error(error);
 		res.status(400).json({ message: "An error occurred" });
