@@ -39,6 +39,7 @@ router.post("/:userId/:videoId/dislike", checkAuth, async (req, res) => {
 			}
 			foundVideo.dislikes = foundVideo.dislikes + 1;
 			await foundVideo.save();
+			await foundLikedVideo.save();
 			foundDislikedVideo.videos.push(videoId);
 			let newDislikedVideos = await foundDislikedVideo.save();
 			newDislikedVideos = await newDislikedVideos.populate("videos").execPopulate();
@@ -54,6 +55,7 @@ router.post("/:userId/:videoId/dislike", checkAuth, async (req, res) => {
 		foundVideo.dislikes = foundVideo.dislikes + 1;
 		foundUser.dislikedVideos = videoToAdd;
 		await foundVideo.save();
+		await foundLikedVideo.save();
 		await foundUser.save();
 		let savedVideo = await videoToAdd.save();
 		savedVideo = await savedVideo.populate("videos").execPopulate();
