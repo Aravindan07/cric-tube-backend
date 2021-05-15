@@ -43,7 +43,11 @@ router.post("/:userId/:videoId/like", checkAuth, async (req, res) => {
 			foundLikedVideo.videos.push(videoId);
 			let newLikedVideos = await foundLikedVideo.save();
 			newLikedVideos = await newLikedVideos.populate("videos").execPopulate();
-			return res.status(201).json({ message: "Added to liked videos", item: newLikedVideos });
+			return res.status(201).json({
+				message: "Added to liked videos",
+				item: newLikedVideos,
+				clickedVideo: videoId,
+			});
 		}
 		const videoToAdd = new LikedVideo({ userId, videos: [videoId] });
 		foundVideo.likes = foundVideo.likes + 1;
@@ -53,7 +57,9 @@ router.post("/:userId/:videoId/like", checkAuth, async (req, res) => {
 		await foundUser.save();
 		let savedVideo = await videoToAdd.save();
 		savedVideo = await savedVideo.populate("videos").execPopulate();
-		return res.status(201).json({ message: "Added to liked videos", item: savedVideo });
+		return res
+			.status(201)
+			.json({ message: "Added to liked videos", item: savedVideo, clickedVideo: videoId });
 	} catch (error) {
 		console.error(error);
 		res.status(400).json({ message: "An error occurred" });
