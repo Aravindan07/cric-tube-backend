@@ -35,7 +35,7 @@ router.post("/:userId/:videoId/like", checkAuth, async (req, res) => {
 			await foundVideo.save();
 			let newLikedVideos = await foundLikedVideo.save();
 			newLikedVideos = await newLikedVideos.populate("videos").execPopulate();
-			return res.status(201).json({ likedVideos: newLikedVideos });
+			return res.status(201).json({ likedVideos: newLikedVideos, clickedVideo: videoId });
 		}
 		if (foundLikedVideo) {
 			foundVideo.likes = foundVideo.likes + 1;
