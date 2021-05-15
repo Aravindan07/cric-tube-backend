@@ -27,33 +27,32 @@ router.post("/:userId/:videoId/like", checkAuth, async (req, res) => {
 		const checkPresent =
 			foundLikedVideo && foundLikedVideo.videos.find((el) => String(el) === String(videoId));
 		if (checkPresent) {
+			console.log("Inside check present");
 			foundLikedVideo.videos = foundLikedVideo.videos.filter(
-				(el) => String(el) !== String(videoId)
-			);
-			foundUser.likedVideos = foundUser.likedVideos.filter(
 				(el) => String(el) !== String(videoId)
 			);
 			foundVideo.likes = foundVideo.likes - 1;
 			await foundVideo.save();
-			await foundUser.save();
-			const newLikedVideos = await foundLikedVideo.save();
+			let newLikedVideos = await foundLikedVideo.save();
+			newLikedVideos = await newLikedVideos.populate("videos").execPopulate();
 			return res.status(201).json({ likedVideos: newLikedVideos });
 		}
 		if (foundLikedVideo) {
-			foundLikedVideo.videos = [...foundLikedVideo.videos, videoId];
-			const newLikedVideos = await foundLikedVideo.save();
 			foundVideo.likes = foundVideo.likes + 1;
-			foundUser.likedVideos.push(foundLikedVideo);
 			await foundVideo.save();
-			await foundUser.save();
+			foundLikedVideo.videos.push(videoId);
+			let newLikedVideos = await foundLikedVideo.save();
+			newLikedVideos = await newLikedVideos.populate("videos").execPopulate();
 			return res.status(201).json({ message: "Added to liked videos", item: newLikedVideos });
 		}
 		const videoToAdd = new LikedVideo({ userId, videos: [videoId] });
 		foundVideo.likes = foundVideo.likes + 1;
-		foundUser.likedVideos.push(videoToAdd);
+		console.log("foundUser", foundUser);
+		foundUser.likedVideos = videoToAdd;
 		await foundVideo.save();
 		await foundUser.save();
-		const savedVideo = await videoToAdd.save();
+		let savedVideo = await videoToAdd.save();
+		savedVideo = await savedVideo.populate("videos").execPopulate();
 		return res.status(201).json({ message: "Added to liked videos", item: savedVideo });
 	} catch (error) {
 		console.error(error);
