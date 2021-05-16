@@ -78,6 +78,11 @@ router.post("/login", async (req, res) => {
 				populate: { path: "videos", model: "Video" },
 			})
 			.populate({
+				path: "watchLater",
+				model: "WatchLater",
+				populate: { path: "videos", model: "Video" },
+			})
+			.populate({
 				path: "savedVideos",
 				model: "SavedVideo",
 				populate: { path: "videos", model: "Video" },
@@ -118,6 +123,11 @@ router.get("/", checkAuth, async (req, res) => {
 			.populate({
 				path: "dislikedVideos",
 				model: "DislikedVideo",
+				populate: { path: "videos", model: "Video" },
+			})
+			.populate({
+				path: "watchLater",
+				model: "WatchLater",
 				populate: { path: "videos", model: "Video" },
 			})
 			.populate({

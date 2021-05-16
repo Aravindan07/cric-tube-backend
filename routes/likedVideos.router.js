@@ -32,6 +32,7 @@ router.post("/:userId/:videoId/like", checkAuth, async (req, res) => {
 			foundDislikedVideo &&
 			foundDislikedVideo.videos.find((el) => String(el) === String(videoId));
 		if (checkPresent) {
+			// clicking for the 2nd time
 			console.log("Inside check present");
 			foundLikedVideo.videos = foundLikedVideo.videos.filter(
 				(el) => String(el) !== String(videoId)
@@ -44,7 +45,7 @@ router.post("/:userId/:videoId/like", checkAuth, async (req, res) => {
 		}
 		if (foundLikedVideo) {
 			if (checkInDislikedVideos) {
-				foundVideo.likes = foundVideo.likes - 1;
+				foundVideo.dislikes = foundVideo.dislikes - 1;
 				foundDislikedVideo.videos = foundDislikedVideo.videos.filter(
 					(el) => String(el) !== String(videoId)
 				);
@@ -61,14 +62,14 @@ router.post("/:userId/:videoId/like", checkAuth, async (req, res) => {
 				clickedVideo: videoId,
 			});
 		}
+		const videoToAdd = new LikedVideo({ userId, videos: [videoId] });
 		if (checkInDislikedVideos) {
-			foundVideo.likes = foundVideo.likes - 1;
+			foundVideo.dislikes = foundVideo.dislikes - 1;
 			foundDislikedVideo.videos = foundDislikedVideo.videos.filter(
 				(el) => String(el) !== String(videoId)
 			);
 			await foundDislikedVideo.save();
 		}
-		const videoToAdd = new LikedVideo({ userId, videos: [videoId] });
 		foundVideo.likes = foundVideo.likes + 1;
 		console.log("foundUser", foundUser);
 		foundUser.likedVideos = videoToAdd;

@@ -26,7 +26,7 @@ const userSchema = new Schema(
 		watchLater: [
 			{
 				type: Schema.Types.ObjectId,
-				ref: "LikedVideo",
+				ref: "WatchLater",
 			},
 		],
 		savedVideos: [
