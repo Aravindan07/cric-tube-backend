@@ -26,7 +26,9 @@ router.post("/:userId/save-videos", checkAuth, async (req, res) => {
 			foundSavedVideo.videos = foundSavedVideo.videos.concat(videoId);
 			let updatedList = await foundSavedVideo.save();
 			updatedList = await updatedList.populate("videos").execPopulate();
-			return res.status(201).json({ message: "Added to saved videos", item: updatedList });
+			return res
+				.status(201)
+				.json({ message: "Removed from saved videos", item: updatedList });
 		}
 		const newSavedVideo = new SavedVideo({ userId, videos: [videoId] });
 		foundUser.savedVideos = newSavedVideo;
