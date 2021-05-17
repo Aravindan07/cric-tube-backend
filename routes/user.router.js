@@ -86,6 +86,11 @@ router.post("/login", async (req, res) => {
 				path: "savedVideos",
 				model: "SavedVideo",
 				populate: { path: "videos", model: "Video" },
+			})
+			.populate({
+				path: "playlists",
+				model: "Playlist",
+				populate: { path: "playlists.videos", model: "Video" },
 			});
 		if (!user) {
 			return res.status(404).json({ message: "User does not exist" });
@@ -134,6 +139,11 @@ router.get("/", checkAuth, async (req, res) => {
 				path: "savedVideos",
 				model: "SavedVideo",
 				populate: { path: "videos", model: "Video" },
+			})
+			.populate({
+				path: "playlists",
+				model: "Playlist",
+				populate: { path: "playlists.videos", model: "Video" },
 			});
 		return res.status(200).json({
 			user,

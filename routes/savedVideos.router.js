@@ -4,18 +4,6 @@ const router = express.Router();
 const SavedVideo = require("../models/savedVideo.model");
 const User = require("../models/user.model");
 
-// Get all saved Videos
-// router.get("/:userId/get-saved-videos", checkAuth, async (req, res) => {
-// 	const { userId } = req.params;
-// 	try {
-// 		const savedVideos = await SavedVideo.findOne({ userId }).select("-__v").populate("videos");
-// 		res.status(200).json({ savedVideos });
-// 	} catch (error) {
-// 		console.error(error);
-// 		res.status(500).json({ message: "An error occurred while fetching data" });
-// 	}
-// });
-
 // Save/UnSave a video
 router.post("/:userId/save-videos", checkAuth, async (req, res) => {
 	const { userId, videoId } = req.body;

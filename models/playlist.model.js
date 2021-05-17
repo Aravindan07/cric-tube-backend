@@ -6,7 +6,7 @@ const playlistSchema = new Schema(
 		userId: { type: Schema.Types.ObjectId, ref: "User" },
 		playlists: [
 			{
-				playlistName: { type: String, required: true, unique: true },
+				playlistName: { type: String, required: true },
 				videos: [{ type: Schema.Types.ObjectId, ref: "Video" }],
 			},
 		],

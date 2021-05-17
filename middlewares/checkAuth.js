@@ -17,7 +17,7 @@ function checkAuth(req, res, next) {
 		req.user = decoded;
 		next();
 	} catch (error) {
-		res.status(401).json({ message: "Token is not Valid, Sign in again" });
+		res.status(401).json({ message: "Your session expired! Please sign in again" });
 	}
 }
 

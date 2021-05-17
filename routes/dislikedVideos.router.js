@@ -19,7 +19,6 @@ router.post("/:userId/:videoId/dislike", checkAuth, async (req, res) => {
 		const checkInLikedVideos =
 			foundLikedVideo && foundLikedVideo.videos.find((el) => String(el) === String(videoId));
 		if (checkPresent) {
-			console.log("Inside check present");
 			foundDislikedVideo.videos = foundDislikedVideo.videos.filter(
 				(el) => String(el) !== String(videoId)
 			);

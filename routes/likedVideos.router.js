@@ -6,19 +6,6 @@ const User = require("../models/user.model");
 const Video = require("../models/video.model");
 const checkAuth = require("../middlewares/checkAuth");
 
-router.get("/:userId/liked-videos", checkAuth, async (req, res) => {
-	const { userId } = req.params;
-	try {
-		const likedVideos = await LikedVideo.find({ userId: userId })
-			.select("-__v")
-			.populate("videos");
-		res.status(200).json({ likedVideos });
-	} catch (error) {
-		console.error(error);
-		res.status(400).json({ message: "An error occurred" });
-	}
-});
-
 router.post("/:userId/:videoId/like", checkAuth, async (req, res) => {
 	const { userId, videoId } = req.body;
 	try {
@@ -32,8 +19,6 @@ router.post("/:userId/:videoId/like", checkAuth, async (req, res) => {
 			foundDislikedVideo &&
 			foundDislikedVideo.videos.find((el) => String(el) === String(videoId));
 		if (checkPresent) {
-			// clicking for the 2nd time
-			console.log("Inside check present");
 			foundLikedVideo.videos = foundLikedVideo.videos.filter(
 				(el) => String(el) !== String(videoId)
 			);
@@ -71,7 +56,6 @@ router.post("/:userId/:videoId/like", checkAuth, async (req, res) => {
 			await foundDislikedVideo.save();
 		}
 		foundVideo.likes = foundVideo.likes + 1;
-		console.log("foundUser", foundUser);
 		foundUser.likedVideos = videoToAdd;
 		await foundVideo.save();
 		await foundUser.save();

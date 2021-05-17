@@ -4,20 +4,6 @@ const checkAuth = require("../middlewares/checkAuth");
 const User = require("../models/user.model");
 const WatchLater = require("../models/watchLater.model");
 
-// Get all watch later videos for a user
-router.get("/:userId/watch-later", checkAuth, async (req, res) => {
-	const { userId } = req.params;
-	try {
-		const foundWatchLaterVideo = await WatchLater.findOne({ userId })
-			.select("-__v")
-			.populate("videos");
-		return res.status(200).json({ watchLater: foundWatchLaterVideo });
-	} catch (error) {
-		console.error(error);
-		res.status(500).json({ message: "An error occurred" });
-	}
-});
-
 // Add to watch later
 router.post("/:userId/watch-later", checkAuth, async (req, res) => {
 	const { userId, videoId } = req.body;
@@ -56,31 +42,5 @@ router.post("/:userId/watch-later", checkAuth, async (req, res) => {
 		res.status(500).json({ message: "An error occurred" });
 	}
 });
-
-// Delete from watch later
-// router.put("/:userId/remove-watch-later", checkAuth, async (req, res) => {
-// 	const { userId, videoId } = req.body;
-// 	try {
-// 		const user = await User.findOne({ _id: userId });
-// 		const foundWatchLaterVideo = await WatchLater.findOne({ userId });
-// 		foundWatchLaterVideo.videos = foundWatchLaterVideo.videos.filter(
-// 			(el) => String(el) !== String(videoId)
-// 		);
-// 		if (!foundWatchLaterVideo) {
-// 			user.watchLater = [];
-// 			await user.save();
-// 		}
-// 		let newList = await foundWatchLaterVideo.save();
-// 		newList = await newList.populate("videos").execPopulate();
-// 		return res.status(200).json({
-// 			message: "Video removed from watch later",
-// 			item: newList,
-// 			clickedVideo: videoId,
-// 		});
-// 	} catch (error) {
-// 		console.error(error);
-// 		res.status(500).json({ message: "An error occurred" });
-// 	}
-// });
 
 module.exports = router;

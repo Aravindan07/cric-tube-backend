@@ -5,56 +5,22 @@ const Playlist = require("../models/playlist.model");
 const checkAuth = require("../middlewares/checkAuth");
 const Video = require("../models/video.model");
 
-// Get playlist by userId
-router.get("/:userId/get-playlists", checkAuth, async (req, res) => {
-	const { userId } = req.params;
-	try {
-		const allPlaylistsByUser = await Playlist.findOne({ userId })
-			.select("-__v")
-			.populate("playlists.videos");
-		if (allPlaylistsByUser) {
-			return res.status(200).json({ playlists: allPlaylistsByUser });
-		}
-		return res.status(404).json({ message: "No Playlists found" });
-	} catch (error) {
-		console.error(error);
-		res.status(500).json({ message: "Error while fetching data!" });
-	}
-});
-
-// Get playlist by playlistId
-router.get("/:userId/get-playlists", checkAuth, async (req, res) => {
-	const { userId } = req.params;
-	try {
-		const allPlaylistsByUser = await Playlist.findOne({ userId });
-		if (allPlaylistsByUser) {
-			return res.status(200).json({ playlists: allPlaylistsByUser });
-		}
-		return re.status(404).json({ message: "No Playlists found" });
-	} catch (error) {
-		console.error(error);
-		res.status(500).json({ message: "Error while fetching data!" });
-	}
-});
-
 // Post a video to playlist
 router.post("/:userId/playlists", checkAuth, async (req, res) => {
 	const { userId, videoId, playlistName } = req.body;
 	const allPlaylistsByUser = await Playlist.findOne({ userId });
 	const foundUser = await User.findOne({ _id: userId });
-	const foundPlaylist =
-		(await allPlaylistsByUser) &&
-		allPlaylistsByUser.playlists.find((el) => el.playlistName === playlistName);
 	try {
 		if (!allPlaylistsByUser) {
 			const newPlaylist = new Playlist({
 				userId,
 				playlists: [{ playlistName, videos: [videoId] }],
 			});
-			foundUser.playlists.push(newPlaylist);
+			foundUser.playlists = newPlaylist;
 			await foundUser.save();
-			const newList = await newPlaylist.save();
-			return res.status(201).json({ message: "VIdeo added to playlist", playlists: newList });
+			let newList = await newPlaylist.save();
+			newList = await newList.populate("playlists.videos").execPopulate();
+			return res.status(201).json({ message: "Video added to playlist", item: newList });
 		}
 
 		// Add a new playlist object in playlists
@@ -63,13 +29,9 @@ router.post("/:userId/playlists", checkAuth, async (req, res) => {
 				playlistName,
 				videos: [videoId],
 			});
-			const newList = await allPlaylistsByUser.save();
-			return res.status(200).json({ message: "Video added to playlist", playlists: newList });
-		}
-
-		// Add a video to a existing playlist
-		if (allPlaylistsByUser && foundPlaylist) {
-			allPlaylistsByUser.playlists = foundPlaylist.videos.push(videoId);
+			let newList = await allPlaylistsByUser.save();
+			newList = await newList.populate("playlists.videos").execPopulate();
+			return res.status(200).json({ message: "Video added to playlist", item: newList });
 		}
 	} catch (error) {
 		console.error(error);
@@ -87,8 +49,9 @@ router.put("/:userId/playlists/:playlistId", checkAuth, async (req, res) => {
 		allPlaylistsByUser.playlists.map((el) =>
 			String(el._id) === String(playlistId) ? el.videos.push(videoId) : el
 		);
-		const newList = await allPlaylistsByUser.save();
-		return res.json({ message: "Video added to playlist", playlists: newList });
+		let newList = await allPlaylistsByUser.save();
+		newList = await newList.populate("playlists.videos").execPopulate();
+		return res.json({ message: "Video added to playlist", item: newList });
 	} catch (error) {
 		console.error(error);
 		res.status(400).json({
@@ -106,7 +69,7 @@ router.put("/:userId/playlists/:playlistId/edit-name", checkAuth, async (req, re
 			String(el._id) === String(playlistId) ? (el.playlistName = newPlaylistName) : el
 		);
 		const newList = await allPlaylistsByUser.save();
-		return res.json({ message: "Changed playlist name", playlists: newList });
+		return res.json({ message: "Changed playlist name", item: newList });
 	} catch (error) {
 		console.error(error);
 		res.status(400).json({
@@ -123,8 +86,13 @@ router.put("/:userId/playlists/:playlistId/delete", checkAuth, async (req, res) 
 		allPlaylistsByUser.playlists = allPlaylistsByUser.playlists.filter((el) => {
 			return String(el._id) !== String(playlistId);
 		});
-		const newList = await allPlaylistsByUser.save();
-		return res.json({ message: "Playlist deleted", playlists: newList });
+		let newList = await allPlaylistsByUser.save();
+		newList = await newList.populate("playlists.videos").execPopulate();
+		return res.json({
+			message: "Playlist deleted",
+			item: newList,
+			clickedPlaylist: playlistId,
+		});
 	} catch (error) {
 		console.error(error);
 		res.status(400).json({
@@ -144,8 +112,14 @@ router.put("/:userId/playlists/:playlistId/:videoId/delete", checkAuth, async (r
 			}
 			return el;
 		});
-		const newList = await allPlaylistsByUser.save();
-		return res.json({ message: "Video deleted from playlist", playlists: newList });
+		let newList = await allPlaylistsByUser.save();
+		newList = await newList.populate("playlists.videos").execPopulate();
+		return res.json({
+			message: "Video deleted from playlist",
+			item: newList,
+			clickedPlaylist: playlistId,
+			clickedVideo: videoId,
+		});
 	} catch (error) {
 		console.error(error);
 		res.status(400).json({
