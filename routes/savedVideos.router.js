@@ -1,45 +1,11 @@
 const express = require("express");
 const checkAuth = require("../middlewares/checkAuth");
 const router = express.Router();
-const SavedVideo = require("../models/savedVideo.model");
-const User = require("../models/user.model");
+const { SaveVideoController } = require("../controllers/savedVideos.controller");
+const { UserIdParamHandler } = require("../middlewares/paramHandler");
 
 // Save/UnSave a video
-router.post("/:userId/save-videos", checkAuth, async (req, res) => {
-	const { userId, videoId } = req.body;
-	try {
-		const foundSavedVideo = await SavedVideo.findOne({ userId });
-		const foundUser = await User.findById({ _id: userId });
-		if (foundSavedVideo) {
-			const alreadyFound = foundSavedVideo.videos.find(
-				(el) => String(el) === String(videoId)
-			);
-			if (alreadyFound) {
-				foundSavedVideo.videos = foundSavedVideo.videos.filter(
-					(el) => String(el) !== String(videoId)
-				);
-				await foundUser.save();
-				let newList = await foundSavedVideo.save();
-				newList = await newList.populate("videos").execPopulate();
-				return res.status(201).json({ message: "Added to saved videos", item: newList });
-			}
-			foundSavedVideo.videos = foundSavedVideo.videos.concat(videoId);
-			let updatedList = await foundSavedVideo.save();
-			updatedList = await updatedList.populate("videos").execPopulate();
-			return res
-				.status(201)
-				.json({ message: "Removed from saved videos", item: updatedList });
-		}
-		const newSavedVideo = new SavedVideo({ userId, videos: [videoId] });
-		foundUser.savedVideos = newSavedVideo;
-		await foundUser.save();
-		let updatedDoc = await newSavedVideo.save();
-		updatedDoc = await updatedDoc.populate("videos").execPopulate();
-		return res.status(201).json({ message: "Added to saved videos", item: updatedDoc });
-	} catch (error) {
-		console.error(error);
-		res.status(500).json({ message: "An error occurred while fetching data" });
-	}
-});
+router.param("userId", UserIdParamHandler);
+router.route("/:userId/save-videos").all(checkAuth).post(SaveVideoController);
 
 module.exports = router;

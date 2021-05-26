@@ -36,7 +36,7 @@ const userRegister = async (req, res) => {
 					jwt.sign(
 						{ id: savedUser._id },
 						process.env.JWTSECRET,
-						{ expiresIn: "2h" },
+						{ expiresIn: "24h" },
 						(err, token) => {
 							if (err) {
 								throw new Error(err);
@@ -111,4 +111,42 @@ const userLogin = async (req, res) => {
 	}
 };
 
-module.exports = { userRegister, userLogin };
+const loadUser = async (req, res) => {
+	try {
+		const user = await User.findById(req.user.id)
+			.select("-password -createdAt -updatedAt -__v")
+			.populate({
+				path: "likedVideos",
+				model: "LikedVideo",
+				populate: { path: "videos", model: "Video" },
+			})
+			.populate({
+				path: "dislikedVideos",
+				model: "DislikedVideo",
+				populate: { path: "videos", model: "Video" },
+			})
+			.populate({
+				path: "watchLater",
+				model: "WatchLater",
+				populate: { path: "videos", model: "Video" },
+			})
+			.populate({
+				path: "savedVideos",
+				model: "SavedVideo",
+				populate: { path: "videos", model: "Video" },
+			})
+			.populate({
+				path: "playlists",
+				model: "Playlist",
+				populate: { path: "playlists.videos", model: "Video" },
+			});
+		return res.status(200).json({
+			user,
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ message: "An error occurred" });
+	}
+};
+
+module.exports = { userRegister, userLogin, loadUser };

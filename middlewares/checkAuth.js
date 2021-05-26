@@ -6,7 +6,7 @@ function checkAuth(req, res, next) {
 
 	//Check for token
 	if (!token) {
-		return res.status(401).json({ message: "Token is invalid" });
+		return res.status(401).json({ message: "SignIn/Register to continue" });
 	}
 
 	try {
