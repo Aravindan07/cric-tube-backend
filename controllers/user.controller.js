@@ -88,6 +88,11 @@ const userLogin = async (req, res) => {
 				path: "playlists",
 				model: "Playlist",
 				populate: { path: "playlists.videos", model: "Video" },
+			})
+			.populate({
+				path: "history",
+				model: "History",
+				populate: { path: "videos", model: "Video" },
 			});
 		if (!user) {
 			return res.status(404).json({ message: "User does not exist" });
@@ -139,6 +144,11 @@ const loadUser = async (req, res) => {
 				path: "playlists",
 				model: "Playlist",
 				populate: { path: "playlists.videos", model: "Video" },
+			})
+			.populate({
+				path: "history",
+				model: "History",
+				populate: { path: "videos", model: "Video" },
 			});
 		return res.status(200).json({
 			user,

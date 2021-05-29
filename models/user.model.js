@@ -35,6 +35,12 @@ const userSchema = new Schema(
 				ref: "SavedVideo",
 			},
 		],
+		history: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: "History",
+			},
+		],
 	},
 	{ timestamps: true }
 );

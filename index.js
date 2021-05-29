@@ -13,6 +13,7 @@ const savedVideoRoutes = require("./routes/savedVideos.router");
 const videoNoteRoutes = require("./routes/notes.router");
 const categoryRoutes = require("./routes/categories.router");
 const playlistRoutes = require("./routes/playlists.router");
+const historyRoutes = require("./routes/history.router");
 
 app.use(cors());
 app.use(express.json());
@@ -28,6 +29,7 @@ app.use("/api/v1/users", savedVideoRoutes);
 app.use("/api/v1/users", videoNoteRoutes);
 app.use("/api/v1/category", categoryRoutes);
 app.use("/api/v1/users", playlistRoutes);
+app.use("/api/v1/users", historyRoutes);
 
 const PORT = process.env.PORT || 7000;
 
