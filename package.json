@@ -1,0 +1,31 @@
+{
+	"name": "cric-tube-backend",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"start": "node index.js",
+		"server": "nodemon index.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Aravindan07/cric-tube-backend.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/Aravindan07/cric-tube-backend/issues"
+	},
+	"homepage": "https://github.com/Aravindan07/cric-tube-backend#readme",
+	"dependencies": {
+		"bcryptjs": "^2.4.3",
+		"cors": "^2.8.5",
+		"dotenv": "^9.0.2",
+		"email-validator": "^2.0.4",
+		"express": "^4.17.1",
+		"jsonwebtoken": "^8.5.1",
+		"mongoose": "^5.12.8",
+		"mongoose-type-url": "^2.1.0"
+	}
+}
