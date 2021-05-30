@@ -104,7 +104,7 @@ const userLogin = async (req, res) => {
 			return res.status(400).json({ message: "Invalid Credentials!" });
 		}
 		const JwtSecretKey = process.env.JWTSECRET;
-		jwt.sign({ id: user._id }, JwtSecretKey, { expiresIn: "2h" }, (err, token) => {
+		jwt.sign({ id: user._id }, JwtSecretKey, { expiresIn: "24h" }, (err, token) => {
 			if (err) {
 				throw new Error(err);
 			}
