@@ -1,6 +1,6 @@
 {
     "version": 2,
-    "name": "broker-backend",
+    "name": "cric-tube-backend",
     "builds": [
         {
             "src": "index.js",
